@@ -89,7 +89,7 @@ public class CategoryTest
         Action action = () => new Category(validCategory.Name, null!);
 
         action.Should().Throw<EntityValidationException>()
-            .WithMessage("Description should not be empty or null");
+            .WithMessage("Description should not be null");
     }
 
     [Theory(DisplayName = nameof(InstantiateErrorWhenNameIsLessThan3Characters))]

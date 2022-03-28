@@ -71,7 +71,7 @@ public class DomainValidationTest
         Action action = () => DomainValidation.MinLegth(target, minLength, fieldName);
 
         action.Should().Throw<EntityValidationException>()
-            .WithMessage($"{fieldName} should not be less than {minLength} characters long");
+            .WithMessage($"{fieldName} should be at leats {minLength} characters long");
     }
 
     [Theory(DisplayName = nameof(MinLengthOk))]
@@ -118,7 +118,7 @@ public class DomainValidationTest
         Action action = () => DomainValidation.MaxLegth(target, maxLength, fieldName);
 
         action.Should().Throw<EntityValidationException>()
-            .WithMessage($"{fieldName} should not be greater than {maxLength} characters long");
+            .WithMessage($"{fieldName} should be less {maxLength} characters long");
     }
 
     [Theory(DisplayName = nameof(MaxLengthOk))]
