@@ -5,6 +5,7 @@ using UseCases = FC.CodeFlix.Catalog.Application.UseCases.CreateCategory;
 using System;
 using FC.CodeFlix.Catalog.Domain.Entity;
 using System.Threading;
+using FC.CodeFlix.Catalog.Domain.Repository;
 
 namespace FC.CodeFlix.Catalog.UnitTests.Application.CreateCategory;
 public class CreateCategoryTest
@@ -25,7 +26,7 @@ public class CreateCategoryTest
 
         var output = await useCase.Handle(input, CancellationToken.None);
 
-        repositoryMock.Verify(repository => repository.Create(It.IsAny<Category>(), It.IsAny<CancellationToken>), Times.Once);
+        repositoryMock.Verify(repository => repository.Insert(It.IsAny<Category>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWorkMock.Verify(uow => uow.Commit(It.IsAny<CancellationToken>), Times.Once);
 
         output.ShouldNotBeNull();
