@@ -1,9 +1,10 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using UseCase = FC.CodeFlix.Catalog.Application.UseCases.Category.GetCategory
+using UseCase = FC.CodeFlix.Catalog.Application.UseCases.Category.GetCategory;
 
 namespace FC.CodeFlix.Catalog.UnitTests.Application.GetCategory;
 
@@ -26,7 +27,7 @@ public class GetCategoryTest
         )).ReturnsAsync(exampleCategory);
 
         var input = new UseCase.GetCategoryInput(exampleCategory.Id);
-        var useCase = new UseCase.GetCategory(repositoryMock);
+        var useCase = new UseCase.GetCategory(repositoryMock.Object);
 
         // act
         var output = await useCase.Handle(input, CancellationToken.None);
