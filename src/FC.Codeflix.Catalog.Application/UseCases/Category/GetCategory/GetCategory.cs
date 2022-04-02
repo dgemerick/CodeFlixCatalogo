@@ -1,4 +1,5 @@
-﻿using FC.CodeFlix.Catalog.Domain.Repository;
+﻿using FC.CodeFlix.Catalog.Application.UseCases.Category.Common;
+using FC.CodeFlix.Catalog.Domain.Repository;
 
 namespace FC.CodeFlix.Catalog.Application.UseCases.Category.GetCategory;
 public class GetCategory : IGetCategory
@@ -10,10 +11,10 @@ public class GetCategory : IGetCategory
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<GetCategoryOutput> Handle(GetCategoryInput request, CancellationToken cancellationToken)
+    public async Task<CategoryModelOutput> Handle(GetCategoryInput request, CancellationToken cancellationToken)
     {
         var category = await _categoryRepository.Get(request.Id, cancellationToken);
 
-        return GetCategoryOutput.FromCategory(category);
+        return CategoryModelOutput.FromCategory(category);
     }
 }
