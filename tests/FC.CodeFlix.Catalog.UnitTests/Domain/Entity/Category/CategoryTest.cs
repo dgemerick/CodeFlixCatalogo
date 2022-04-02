@@ -105,7 +105,7 @@ public class CategoryTest
         Action action = () => new Category(invalidName, validCategory.Description);
 
         action.Should().Throw<EntityValidationException>()
-            .WithMessage("Name should be at leats 3 characters long");
+            .WithMessage("Name should be at least 3 characters long");
     }
 
     [Fact(DisplayName = nameof(InstantiateErrorWhenNameIsGreaterThan255Characters))]
@@ -214,7 +214,7 @@ public class CategoryTest
         Action action = () => validCategory.Update(invalidName);
 
         action.Should().Throw<EntityValidationException>()
-            .WithMessage("Name should be at leats 3 characters long");
+            .WithMessage("Name should be at least 3 characters long");
     }
 
     public static IEnumerable<object[]> GetNamesWithLessThan3Characters(int numberOfTests = 6)

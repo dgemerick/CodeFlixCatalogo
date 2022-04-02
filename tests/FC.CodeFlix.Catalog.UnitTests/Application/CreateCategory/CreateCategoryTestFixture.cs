@@ -4,6 +4,7 @@ using FC.CodeFlix.Catalog.Domain.Repository;
 using FC.CodeFlix.Catalog.UnitTests.Common;
 using Moq;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace FC.CodeFlix.Catalog.UnitTests.Application.CreateCategory;
@@ -41,6 +42,47 @@ public class CreateCategoryTestFixture : BaseFixture
     public bool GetRandomBoolean() => (new Random()).NextDouble() < 0.5;
 
     public CreateCategoryInput GetInput() => new(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomBoolean());
+
+    public CreateCategoryInput GetInvalidInputShortName()
+    {
+        var invalidInputsList = new List<object[]>();
+
+        var invalidInputShortName = GetInput();
+        invalidInputShortName.Name = invalidInputShortName.Name[..2];
+        return invalidInputShortName;
+        
+    }
+    
+    public CreateCategoryInput GetInvalidInputTooLongName()
+    {
+        var invalidInputTooLongName = GetInput();
+        var tooLongNameForCategory = Faker.Commerce.ProductName();
+        while (tooLongNameForCategory.Length <= 255)
+            tooLongNameForCategory = $"{tooLongNameForCategory} {Faker.Commerce.ProductName()}";
+
+        invalidInputTooLongName.Name = tooLongNameForCategory;
+        return invalidInputTooLongName;
+    }
+
+    public CreateCategoryInput GetInvalidInputCategoryNull()
+    {
+        var invalidInputDescriptionNull = GetInput();
+        invalidInputDescriptionNull.Description = null;
+
+        return invalidInputDescriptionNull;
+    }
+
+    public CreateCategoryInput GetInvalidInputTooLongDescription()
+    {
+        var invalidInputTooLongDescription = GetInput();
+        var tooLongDescriptionForCategory = Faker.Commerce.ProductDescription();
+        while (tooLongDescriptionForCategory.Length <= 10000)
+            tooLongDescriptionForCategory = $"{tooLongDescriptionForCategory} {Faker.Commerce.ProductDescription()}";
+
+        invalidInputTooLongDescription.Description = tooLongDescriptionForCategory;
+
+        return invalidInputTooLongDescription;
+    }
 
     public Mock<ICategoryRepository> GetRepositoryMock() => new();
 
