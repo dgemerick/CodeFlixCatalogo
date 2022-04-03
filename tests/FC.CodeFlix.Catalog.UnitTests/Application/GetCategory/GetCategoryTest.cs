@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using UseCase = FC.CodeFlix.Catalog.Application.UseCases.Category.GetCategory;
+using FC.CodeFlix.Catalog.Application.Exceptions;
 
 namespace FC.CodeFlix.Catalog.UnitTests.Application.GetCategory;
 
@@ -45,5 +46,31 @@ public class GetCategoryTest
         output.Id.Should().Be(exampleCategory.Id);
         output.CreatedAt.Should().Be(exampleCategory.CreatedAt);
     }
-    
+
+    [Fact(DisplayName = nameof(NotFoundExceptionWhenCategoryDoesntExist))]
+    [Trait("Application", "GetCategory - Use Cases")]
+    public async Task NotFoundExceptionWhenCategoryDoesntExist()
+    {
+        var repositoryMock = _fixture.GetRepositoryMock();
+        var exampleGuid = Guid.NewGuid();
+        repositoryMock.Setup(x => x.Get(
+            It.IsAny<Guid>(),
+            It.IsAny<CancellationToken>()
+        )).ThrowsAsync(new NotFoundException($"Category '{exampleGuid}' not found"));
+
+        var input = new UseCase.GetCategoryInput(exampleGuid);
+        var useCase = new UseCase.GetCategory(repositoryMock.Object);
+
+
+        var task = async () => await useCase.Handle(input, CancellationToken.None);
+
+        await task.Should().ThrowAsync<NotFoundException>();
+
+        repositoryMock.Verify(x => x.Get(
+            It.IsAny<Guid>(),
+            It.IsAny<CancellationToken>()
+        ), Times.Once);
+
+    }
+
 }
