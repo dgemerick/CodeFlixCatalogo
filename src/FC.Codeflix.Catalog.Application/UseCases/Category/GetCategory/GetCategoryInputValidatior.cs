@@ -5,5 +5,4 @@ public class GetCategoryInputValidatior : AbstractValidator<GetCategoryInput>
 {
     public GetCategoryInputValidatior() => RuleFor(x => x.Id).NotEmpty();
 
-
 }
