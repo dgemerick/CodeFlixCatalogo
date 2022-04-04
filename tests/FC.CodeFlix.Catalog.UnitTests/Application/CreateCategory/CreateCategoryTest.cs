@@ -5,7 +5,6 @@ using UseCases = FC.CodeFlix.Catalog.Application.UseCases.Category.CreateCategor
 using System;
 using FC.CodeFlix.Catalog.Domain.Entity;
 using System.Threading;
-using System.Collections.Generic;
 using FC.CodeFlix.Catalog.Application.UseCases.Category.CreateCategory;
 using FC.CodeFlix.Catalog.Domain.Exceptions;
 using System.Threading.Tasks;
