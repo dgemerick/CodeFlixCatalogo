@@ -26,11 +26,11 @@ public class UpdateCategoryTest
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         var exampleCategory = _fixture.GetExempleCategory();
         repositoryMock.Setup(x => x.Get(exampleCategory.Id, It.IsAny<CancellationToken>())).ReturnsAsync(exampleCategory);
-        var input = UseCase.UpdateCategoryInput(exampleCategory.Id, _fixture.GetValidCategoryName(), _fixture.GetValidCategoryDescription(), !exampleCategory.IsActive);
+        var input = new UseCase.UpdateCategoryInput(exampleCategory.Id, _fixture.GetValidCategoryName(), _fixture.GetValidCategoryDescription(), !exampleCategory.IsActive);
         var useCase = new UseCase.UpdateCategory(repositoryMock.Object, unitOfWorkMock.Object);
 
         //act
-        CategoryModelOutput output = await useCase.Handle(input);
+        CategoryModelOutput output = await useCase.Handle(input, CancellationToken.None);
 
         //
         output.Should().NotBeNull();
