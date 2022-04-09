@@ -1,4 +1,5 @@
 ﻿using FC.CodeFlix.Catalog.Domain.Entity;
+using FC.CodeFlix.Catalog.Domain.SeedWork.SearchableRepository;
 using Moq;
 using System.Collections.Generic;
 using System.Threading;
