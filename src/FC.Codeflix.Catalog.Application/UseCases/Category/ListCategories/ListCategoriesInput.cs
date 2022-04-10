@@ -6,7 +6,12 @@ namespace FC.CodeFlix.Catalog.Application.UseCases.Category.ListCategories;
 
 public class ListCategoriesInput : PaginatedListInput, IRequest<ListCategoriesOutput>
 {
-    public ListCategoriesInput(int page, int perPage, string search, string sort, SearchOrder dir) : base(page, perPage, search, sort, dir)
-    {
-    }
+    public ListCategoriesInput(
+        int page = 1, 
+        int perPage = 15, 
+        string search = "", 
+        string sort = "", 
+        SearchOrder dir = 
+        SearchOrder.Asc
+    ) : base(page, perPage, search, sort, dir) { }
 }
