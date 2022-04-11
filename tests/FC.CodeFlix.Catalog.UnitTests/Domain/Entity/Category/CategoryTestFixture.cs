@@ -1,8 +1,8 @@
-﻿using FC.CodeFlix.Catalog.Domain.Entity;
-using FC.CodeFlix.Catalog.UnitTests.Common;
+﻿using FC.CodeFlix.Catalog.UnitTests.Common;
 using Xunit;
+using DomainModel = FC.CodeFlix.Catalog.Domain.Entity;
 
-namespace FC.CodeFlix.Catalog.UnitTests.Domain.Entity;
+namespace FC.CodeFlix.Catalog.UnitTests.Domain.Entity.Category;
 public class CategoryTestFixture : BaseFixture
 {
     public CategoryTestFixture() : base() { }
@@ -11,7 +11,7 @@ public class CategoryTestFixture : BaseFixture
     {
         var categoryName = "";
 
-        while (categoryName.Length < 3)        
+        while (categoryName.Length < 3)
             categoryName = Faker.Commerce.Categories(1)[0];
 
         if (categoryName.Length > 255)
@@ -30,8 +30,8 @@ public class CategoryTestFixture : BaseFixture
         return categoryDescription;
     }
 
-    public Category GetValidCategory()
-        => new Category(
+    public DomainModel.Category GetValidCategory()
+        => new DomainModel.Category(
             GetValidCategoryName(),
             GetValidCategoryDescription()
         );

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using FC.CodeFlix.Catalog.Application.Exceptions;
 using FluentAssertions;
 
-namespace FC.CodeFlix.Catalog.UnitTests.Application.DeleteCategory;
+namespace FC.CodeFlix.Catalog.UnitTests.Application.Category.DeleteCategory;
 
 [Collection(nameof(DeleteCategoryTestFixture))]
 public class DeleteCategoryTest
@@ -23,12 +23,12 @@ public class DeleteCategoryTest
     {
         var repositoryMock = _fixture.GetRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
-        
-        var categoryExemple = _fixture.GetValidCategory();
+
+        var categoryExemple = _fixture.GetExampleCategory();
 
         repositoryMock.Setup(x => x.Get(categoryExemple.Id, It.IsAny<CancellationToken>())).ReturnsAsync(categoryExemple);
 
-        var input = new UseCase.DeleteCategoryInput(categoryExemple.Id);        
+        var input = new UseCase.DeleteCategoryInput(categoryExemple.Id);
         var useCase = new UseCase.DeleteCategory(repositoryMock.Object, unitOfWorkMock.Object);
 
         await useCase.Handle(input, CancellationToken.None);
@@ -56,6 +56,6 @@ public class DeleteCategoryTest
 
         await task.Should().ThrowAsync<NotFoundException>();
 
-        repositoryMock.Verify(x => x.Get(exempleGuid, It.IsAny<CancellationToken>()), Times.Once);        
+        repositoryMock.Verify(x => x.Get(exempleGuid, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

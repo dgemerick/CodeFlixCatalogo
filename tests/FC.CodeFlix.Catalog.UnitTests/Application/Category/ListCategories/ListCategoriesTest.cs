@@ -10,8 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using UseCase = FC.CodeFlix.Catalog.Application.UseCases.Category.ListCategories;
+using DomainModel = FC.CodeFlix.Catalog.Domain.Entity;
 
-namespace FC.CodeFlix.Catalog.UnitTests.Application.ListCategories;
+namespace FC.CodeFlix.Catalog.UnitTests.Application.Category.ListCategories;
 
 [Collection(nameof(ListCategoriesTestFixture))]
 public class ListCategoriesTest
@@ -30,11 +31,11 @@ public class ListCategoriesTest
         var categoriesExampleList = _fixture.GetExampleCategoriesList();
         var repositoryMock = _fixture.GetRepositoryMock();
         var input = _fixture.GetExampleInput();
-        var outputRepositorySearch = new SearchOutput<Category>(
+        var outputRepositorySearch = new SearchOutput<DomainModel.Category>(
             currentPage: input.Page,
             perPage: input.PerPage,
-            items: (IReadOnlyList<Category>)categoriesExampleList,
-            total: (new Random()).Next(50, 200)
+            items: (IReadOnlyList<DomainModel.Category>)categoriesExampleList,
+            total: new Random().Next(50, 200)
         );
         repositoryMock.Setup(x => x.Search(
             It.Is<SearchInput>(
@@ -85,10 +86,10 @@ public class ListCategoriesTest
     {
         var repositoryMock = _fixture.GetRepositoryMock();
         var input = _fixture.GetExampleInput();
-        var outputRepositorySearch = new SearchOutput<Category>(
+        var outputRepositorySearch = new SearchOutput<DomainModel.Category>(
             currentPage: input.Page,
             perPage: input.PerPage,
-            items: (new List<Category>()).AsReadOnly(),
+            items: new List<DomainModel.Category>().AsReadOnly(),
             total: 0
         );
         repositoryMock.Setup(x => x.Search(
@@ -112,7 +113,7 @@ public class ListCategoriesTest
         output.PerPage.Should().Be(outputRepositorySearch.PerPage);
         output.Total.Should().Be(0);
         output.Items.Should().HaveCount(0);
-        
+
         repositoryMock.Verify(x => x.Search(
             It.Is<SearchInput>(
                 searchInput => searchInput.Page == input.Page &&
@@ -136,11 +137,11 @@ public class ListCategoriesTest
     {
         var categoriesExampleList = _fixture.GetExampleCategoriesList();
         var repositoryMock = _fixture.GetRepositoryMock();
-        var outputRepositorySearch = new SearchOutput<Category>(
+        var outputRepositorySearch = new SearchOutput<DomainModel.Category>(
             currentPage: input.Page,
             perPage: input.PerPage,
-            items: (IReadOnlyList<Category>)categoriesExampleList,
-            total: (new Random()).Next(50, 200)
+            items: (IReadOnlyList<DomainModel.Category>)categoriesExampleList,
+            total: new Random().Next(50, 200)
         );
         repositoryMock.Setup(x => x.Search(
             It.Is<SearchInput>(

@@ -7,7 +7,7 @@ using Xunit;
 using UseCase = FC.CodeFlix.Catalog.Application.UseCases.Category.GetCategory;
 using FC.CodeFlix.Catalog.Application.Exceptions;
 
-namespace FC.CodeFlix.Catalog.UnitTests.Application.GetCategory;
+namespace FC.CodeFlix.Catalog.UnitTests.Application.Category.GetCategory;
 
 [Collection(nameof(GetCategoryTestFixture))]
 public class GetCategoryTest
@@ -21,9 +21,9 @@ public class GetCategoryTest
     public async Task GetCategory()
     {
         var repositoryMock = _fixture.GetRepositoryMock();
-        var exampleCategory = _fixture.GetValidCategory();
+        var exampleCategory = _fixture.GetExampleCategory();
         repositoryMock.Setup(x => x.Get(
-            It.IsAny<Guid>(), 
+            It.IsAny<Guid>(),
             It.IsAny<CancellationToken>()
         )).ReturnsAsync(exampleCategory);
 
