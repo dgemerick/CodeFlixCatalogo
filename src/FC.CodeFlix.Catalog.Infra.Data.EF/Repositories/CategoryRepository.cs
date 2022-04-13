@@ -14,6 +14,11 @@ public class CategoryRepository : ICategoryRepository
         _context = context;
     }
 
+    public async Task<Category> Get(Guid id, CancellationToken cancellationToken)
+    {
+        return await _categories.FindAsync( new object[] { id }, cancellationToken);
+    }
+
     public async Task Insert(Category aggregate, CancellationToken cancellationToken)
     {
         await _categories.AddAsync(aggregate, cancellationToken);
@@ -23,11 +28,6 @@ public class CategoryRepository : ICategoryRepository
     {
         throw new NotImplementedException();
     }
-
-    public Task<Category> Get(Guid id, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }    
 
     public Task<SearchOutput<Category>> Search(SearchInput input, CancellationToken cancellationToken)
     {
