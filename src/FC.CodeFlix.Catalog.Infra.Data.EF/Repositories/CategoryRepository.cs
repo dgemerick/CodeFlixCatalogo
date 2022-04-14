@@ -29,14 +29,14 @@ public class CategoryRepository : ICategoryRepository
         await _categories.AddAsync(aggregate, cancellationToken);
     }
 
-    public Task Update(Category aggregate, CancellationToken cancellationToken)
+    public Task Update(Category aggregate, CancellationToken _)
     {
         return Task.FromResult(_categories.Update(aggregate));
     }
 
-    public Task Delete(Category aggregate, CancellationToken cancellationToken)
+    public Task Delete(Category aggregate, CancellationToken _)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_categories.Remove(aggregate));
     }
 
     public Task<SearchOutput<Category>> Search(SearchInput input, CancellationToken cancellationToken)
