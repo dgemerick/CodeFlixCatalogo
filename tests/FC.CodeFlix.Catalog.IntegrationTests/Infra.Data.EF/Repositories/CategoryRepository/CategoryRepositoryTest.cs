@@ -31,7 +31,7 @@ public class CategoryRepositoryTest
         await categoryRepository.Insert(exampleCategory, CancellationToken.None);
         await dbContext.SaveChangesAsync(CancellationToken.None);
 
-        var dbCategory = await dbContext.Categories.FindAsync(exampleCategory.Id);
+        var dbCategory = await (_fixture.CreateDbContext()).Categories.FindAsync(exampleCategory.Id);
 
         dbCategory.Should().NotBeNull();
         dbCategory!.Name.Should().Be(exampleCategory.Name);
@@ -50,7 +50,7 @@ public class CategoryRepositoryTest
         exampleCategoriesList.Add(exampleCategory);
         await dbContext.AddRangeAsync(exampleCategoriesList);
         await dbContext.SaveChangesAsync(CancellationToken.None);
-        var categoryRepository = new Repository.CategoryRepository(dbContext);
+        var categoryRepository = new Repository.CategoryRepository(_fixture.CreateDbContext());
 
         var dbCategory = await categoryRepository.Get(exampleCategory.Id, CancellationToken.None);
 
@@ -70,7 +70,7 @@ public class CategoryRepositoryTest
         var exampleId = Guid.NewGuid();
         await dbContext.AddRangeAsync(_fixture.GetExampleCategoriesList(15));
         await dbContext.SaveChangesAsync(CancellationToken.None);
-        var categoryRepository = new Repository.CategoryRepository(dbContext);
+        var categoryRepository = new Repository.CategoryRepository(_fixture.CreateDbContext());
 
         var task = async () => await categoryRepository.Get(exampleId, CancellationToken.None);
 
