@@ -156,6 +156,23 @@ public class CategoryRepositoryTest
             outpuItem.IsActive.Should().Be(exampleItem.IsActive);
             outpuItem.CreatedAt.Should().Be(exampleItem.CreatedAt);
         }
+    }
 
+    [Fact(DisplayName = nameof(SearchReturnsEmptyWhenPersistenceIsEmpty))]
+    [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
+    public async Task SearchReturnsEmptyWhenPersistenceIsEmpty()
+    {
+        CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var categoryRepository = new Repository.CategoryRepository(dbContext);
+        var searchInput = new SearchInput(1, 20, "", "", SearchOrder.Asc);
+
+        var output = await categoryRepository.Search(searchInput, CancellationToken.None);
+
+        output.Should().NotBeNull();
+        output.Items.Should().NotBeNull();
+        output.CurrentPage.Should().Be(searchInput.Page);
+        output.PerPage.Should().Be(searchInput.PerPage);
+        output.Total.Should().Be(0);
+        output.Items.Should().HaveCount(0);        
     }
 }
