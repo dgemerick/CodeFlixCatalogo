@@ -267,6 +267,7 @@ public class CategoryRepositoryTest
     [Theory(DisplayName = nameof(SearchOrdered))]
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     [InlineData("name", "asc")]
+    [InlineData("name", "desc")]
     public async Task SearchOrdered(string orderBy, string order)
     {
         CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
