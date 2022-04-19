@@ -268,10 +268,19 @@ public class CategoryRepositoryTest
     [Trait("Integration/Infra.Data", "CategoryRepository - Repositories")]
     [InlineData("name", "asc")]
     [InlineData("name", "desc")]
-    public async Task SearchOrdered(string orderBy, string order)
+    [InlineData("id", "asc")]
+    [InlineData("id", "desc")]
+    [InlineData("createdAt", "asc")]
+    [InlineData("createdAt", "desc")]
+    [InlineData("", "asc")]
+    public async Task SearchOrdered(
+        string orderBy,
+        string order
+    )
     {
         CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
-        var exampleCategoriesList = _fixture.GetExampleCategoriesList(10);
+        var exampleCategoriesList =
+            _fixture.GetExampleCategoriesList(10);
         await dbContext.AddRangeAsync(exampleCategoriesList);
         await dbContext.SaveChangesAsync(CancellationToken.None);
         var categoryRepository = new Repository.CategoryRepository(dbContext);
@@ -280,24 +289,28 @@ public class CategoryRepositoryTest
 
         var output = await categoryRepository.Search(searchInput, CancellationToken.None);
 
-        var expectedOrderedList = _fixture.CloneCategoriesListOrdered(exampleCategoriesList, orderBy, searchOrder);
+        var expectedOrderedList = _fixture.CloneCategoriesListOrdered(
+            exampleCategoriesList,
+            orderBy,
+            searchOrder
+        );
         output.Should().NotBeNull();
         output.Items.Should().NotBeNull();
         output.CurrentPage.Should().Be(searchInput.Page);
         output.PerPage.Should().Be(searchInput.PerPage);
         output.Total.Should().Be(exampleCategoriesList.Count);
         output.Items.Should().HaveCount(exampleCategoriesList.Count);
-        for (int i = 0; i < expectedOrderedList.Count; i++)
+        for (int indice = 0; indice < expectedOrderedList.Count; indice++)
         {
-            var expectedItem = exampleCategoriesList[i];
-            var outputItem = output.Items[i];
+            var expectedItem = expectedOrderedList[indice];
+            var outputItem = output.Items[indice];
             expectedItem.Should().NotBeNull();
             outputItem.Should().NotBeNull();
             outputItem.Name.Should().Be(expectedItem!.Name);
-            outputItem.Id.Should().Be(expectedItem!.Id);
+            outputItem.Id.Should().Be(expectedItem.Id);
             outputItem.Description.Should().Be(expectedItem.Description);
             outputItem.IsActive.Should().Be(expectedItem.IsActive);
             outputItem.CreatedAt.Should().Be(expectedItem.CreatedAt);
-        }        
+        }
     }
 }

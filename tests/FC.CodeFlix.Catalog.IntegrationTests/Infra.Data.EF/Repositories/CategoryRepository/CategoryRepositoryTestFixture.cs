@@ -61,7 +61,10 @@ public class CategoryRepositoryTestFixture : BaseFixture
             return category;
         }).ToList();
 
-    public List<Category> CloneCategoriesListOrdered(List<Category> categoriesList, string orderBy, SearchOrder order)
+    public List<Category> CloneCategoriesListOrdered(
+        List<Category> categoriesList,
+        string orderBy,
+        SearchOrder order)
     {
         var listClone = new List<Category>(categoriesList);
         var orderedEnumerable = (orderBy.ToLower(), order) switch
@@ -73,7 +76,6 @@ public class CategoryRepositoryTestFixture : BaseFixture
             ("createdat", SearchOrder.Asc) => listClone.OrderBy(x => x.CreatedAt),
             ("createdat", SearchOrder.Desc) => listClone.OrderByDescending(x => x.CreatedAt),
             _ => listClone.OrderBy(x => x.Name),
-
         };
         return orderedEnumerable.ToList();
     }

@@ -55,7 +55,11 @@ public class CategoryRepository : ICategoryRepository
         return new SearchOutput<Category>(input.Page, input.PerPage, total, items);                
     }
 
-    private IQueryable<Category> AddOrderToQuery(IQueryable<Category> query, string orderProperty, SearchOrder order)
+    private IQueryable<Category> AddOrderToQuery(
+        IQueryable<Category> query,
+        string orderProperty,
+        SearchOrder order
+    )
         => (orderProperty.ToLower(), order) switch
         {
             ("name", SearchOrder.Asc) => query.OrderBy(x => x.Name),
