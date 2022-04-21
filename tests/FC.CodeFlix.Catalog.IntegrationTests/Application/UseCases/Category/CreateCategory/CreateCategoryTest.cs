@@ -5,6 +5,7 @@ using System.Threading;
 using Xunit;
 using FluentAssertions;
 using FC.CodeFlix.Catalog.Application.UseCases.Category.CreateCategory;
+using FC.CodeFlix.Catalog.Domain.Exceptions;
 
 namespace FC.CodeFlix.Catalog.IntegrationTests.Application.UseCases.Category.CreateCategory;
 
@@ -106,6 +107,23 @@ public class CreateCategoryTest
         output.IsActive.Should().Be(true);
         output.Id.Should().NotBeEmpty();
         output.CreatedAt.Should().NotBeSameDateAs(default);
+    }
 
+    [Theory(DisplayName = nameof(ThrowWhenCantInstatiateCategory))]
+    [Trait("Integration/Application", "CreateCategory - Use Cases")]
+    [MemberData(nameof(CreateCategoryTestDataGenerator.GetInvalidInputs),
+                parameters: 4,
+                MemberType = typeof(CreateCategoryTestDataGenerator))]
+    public async void ThrowWhenCantInstatiateCategory(CreateCategoryInput input, string expectedExceptionMessage)
+    {
+        var dbContext = _fixture.CreateDbContext();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        var useCase = new ApplicationUseCases.CreateCategory(repository, unitOfWork);
+
+        var task = async () => await useCase.Handle(input, CancellationToken.None);
+
+        await task.Should().ThrowAsync<EntityValidationException>()
+            .WithMessage(expectedExceptionMessage);
     }
 }
