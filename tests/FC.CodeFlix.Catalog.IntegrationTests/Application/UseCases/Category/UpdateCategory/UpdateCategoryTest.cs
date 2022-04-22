@@ -7,6 +7,7 @@ using Xunit;
 using DomainModel = FC.CodeFlix.Catalog.Domain.Entity;
 using ApplicationUseCase = FC.CodeFlix.Catalog.Application.UseCases.Category.UpdateCategory;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FC.CodeFlix.Catalog.IntegrationTests.Application.UseCases.Category.UpdateCategory;
 
@@ -31,8 +32,9 @@ public class UpdateCategoryTest
     {
         var dbContext = _fixture.CreateDbContext();
         await dbContext.AddRangeAsync(_fixture.GetExampleCategoriesList());
-        await dbContext.AddAsync(exampleCategory);
+        var trakingInfo = await dbContext.AddAsync(exampleCategory);
         dbContext.SaveChanges();
+        trakingInfo.State = EntityState.Detached;
         var repository = new CategoryRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
