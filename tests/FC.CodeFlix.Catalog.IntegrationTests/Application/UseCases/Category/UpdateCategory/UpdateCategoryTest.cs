@@ -8,6 +8,8 @@ using DomainModel = FC.CodeFlix.Catalog.Domain.Entity;
 using ApplicationUseCase = FC.CodeFlix.Catalog.Application.UseCases.Category.UpdateCategory;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using FC.CodeFlix.Catalog.Application.Exceptions;
+using FC.CodeFlix.Catalog.Domain.Exceptions;
 
 namespace FC.CodeFlix.Catalog.IntegrationTests.Application.UseCases.Category.UpdateCategory;
 
@@ -126,5 +128,52 @@ public class UpdateCategoryTest
         output.Name.Should().Be(input.Name);
         output.Description.Should().Be(exampleCategory.Description);
         output.IsActive.Should().Be(exampleCategory.IsActive!);
+    }
+
+    [Fact(DisplayName = (nameof(UpdateThrowsWhenNotFoundCategory)))]
+    [Trait("Integration/Application", "UpdateCategory - Use Cases")]    
+    public async Task UpdateThrowsWhenNotFoundCategory()
+    {
+
+        var input = _fixture.GetValidInput();
+        var dbContext = _fixture.CreateDbContext();
+        await dbContext.AddRangeAsync(_fixture.GetExampleCategoriesList());
+        dbContext.SaveChanges();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
+
+        //act
+        var task = async () => await useCase.Handle(input, CancellationToken.None);
+
+        //
+        await task.Should().ThrowAsync<NotFoundException>()
+            .WithMessage($"Category '{input.Id}' not found.");
+    }
+
+    [Theory(DisplayName = (nameof(UpdateThrowsWhenCantInstantiateCategory)))]
+    [Trait("Integration/Application", "UpdateCategory - Use Cases")]
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetInvalidInputs),
+        parameters: 6,
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+    )]
+    public async Task UpdateThrowsWhenCantInstantiateCategory(UpdateCategoryInput input, string expectedExceptionMessage)
+    {
+        var dbContext = _fixture.CreateDbContext();
+        var exampleCategories = _fixture.GetExampleCategoriesList();
+        await dbContext.AddRangeAsync(exampleCategories);
+        dbContext.SaveChanges();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
+        input.Id = exampleCategories[0].Id;
+
+        //act
+        var task = async () => await useCase.Handle(input, CancellationToken.None);
+
+        //
+        await task.Should().ThrowAsync<EntityValidationException>()
+            .WithMessage(expectedExceptionMessage);
     }
 }
