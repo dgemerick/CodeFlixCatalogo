@@ -1,8 +1,10 @@
-﻿using FC.CodeFlix.Catalog.Application.UseCases.Category.DeleteCategory;
+﻿using FC.CodeFlix.Catalog.Application.Exceptions;
+using FC.CodeFlix.Catalog.Application.UseCases.Category.DeleteCategory;
 using FC.CodeFlix.Catalog.Infra.Data.EF;
 using FC.CodeFlix.Catalog.Infra.Data.EF.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -45,24 +47,22 @@ public class DeleteCategoryTest
         dbCategories.Should().HaveCount(exampleList.Count);
     }
 
-    //[Fact(DisplayName = nameof(ThrowWhenCategoryNotFound))]
-    //[Trait("Integration/Application", "DeleteCategory - Use Cases")]
-    //public async Task ThrowWhenCategoryNotFound()
-    //{
-    //    var repositoryMock = _fixture.GetRepositoryMock();
-    //    var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+    [Fact(DisplayName = nameof(DeleteCategoryThrowsWhenNotFound))]
+    [Trait("Integration/Application", "DeleteCategory - Use Cases")]
+    public async Task DeleteCategoryThrowsWhenNotFound()
+    {
+        var dbContext = _fixture.CreateDbContext();
+        var exampleList = _fixture.GetExampleCategoriesList(10);
+        await dbContext.AddRangeAsync(exampleList);
+        await dbContext.SaveChangesAsync();
+        var repository = new CategoryRepository(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
+        var useCase = new ApplicationUseCase.DeleteCategory(repository, unitOfWork);
+        var input = new DeleteCategoryInput(Guid.NewGuid());
 
-    //    var exempleGuid = Guid.NewGuid();
+        var task = async () => await useCase.Handle(input, CancellationToken.None);
 
-    //    repositoryMock.Setup(x => x.Get(exempleGuid, It.IsAny<CancellationToken>())).ThrowsAsync(new NotFoundException($"Category '{exempleGuid}' not found."));
-
-    //    var input = new UseCase.DeleteCategoryInput(exempleGuid);
-    //    var useCase = new UseCase.DeleteCategory(repositoryMock.Object, unitOfWorkMock.Object);
-
-    //    var task = async () => await useCase.Handle(input, CancellationToken.None);
-
-    //    await task.Should().ThrowAsync<NotFoundException>();
-
-    //    repositoryMock.Verify(x => x.Get(exempleGuid, It.IsAny<CancellationToken>()), Times.Once);
-    //}
+        await task.Should().ThrowAsync<NotFoundException>()
+            .WithMessage($"Category '{input.Id}' not found.");
+    }
 }
