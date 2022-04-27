@@ -1,6 +1,7 @@
 ﻿using FC.CodeFlix.Catalog.Application.UseCases.Category.Common;
 using FluentAssertions;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 using DomainEntity = FC.CodeFlix.Catalog.Domain.Entity;
@@ -23,10 +24,12 @@ public class CreateCategoryApiTest
     {
         var input = _fixture.GetExampleInput();
 
-        CategoryModelOutput output = await _fixture.Api.Post<CategoryModelOutput>("/categories", input);
+        var (response, output) = await _fixture.ApiClient.Post<CategoryModelOutput>("/categories", input);
 
+        response.Should().NotBeNull();
+        response!.StatusCode.Should().Be(HttpStatusCode.Created);
         output.Should().NotBeNull();
-        output.Name.Should().Be(input.Name);
+        output!.Name.Should().Be(input.Name);
         output.Description.Should().Be(input.Description);
         output.IsActive.Should().Be(input.IsActive);
         output.Id.Should().NotBeEmpty();
