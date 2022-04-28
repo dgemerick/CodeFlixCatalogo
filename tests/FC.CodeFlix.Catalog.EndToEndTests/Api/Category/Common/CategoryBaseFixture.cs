@@ -4,6 +4,13 @@ using System;
 namespace FC.CodeFlix.Catalog.EndToEndTests.Api.Category.Common;
 public class CategoryBaseFixture : BaseFixture
 {
+    public CategoryPersistence Persistence;
+
+    public CategoryBaseFixture(CategoryPersistence persistence) : base()
+    {
+        Persistence = new CategoryPersistence(CreateDbContext());
+    }
+
     public string GetValidCategoryName()
     {
         var categoryName = "";
