@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FC.CodeFlix.Catalog.Api\FC.CodeFlix.Catalog.Api.csproj" />
     <ProjectReference Include="..\..\src\FC.CodeFlix.Catalog.Infra.Data.EF\FC.CodeFlix.Catalog.Infra.Data.EF.csproj" />
   </ItemGroup>
 
