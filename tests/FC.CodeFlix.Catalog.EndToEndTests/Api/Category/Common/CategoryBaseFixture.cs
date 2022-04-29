@@ -6,7 +6,7 @@ public class CategoryBaseFixture : BaseFixture
 {
     public CategoryPersistence Persistence;
 
-    public CategoryBaseFixture(CategoryPersistence persistence) : base()
+    public CategoryBaseFixture() : base()
     {
         Persistence = new CategoryPersistence(CreateDbContext());
     }
