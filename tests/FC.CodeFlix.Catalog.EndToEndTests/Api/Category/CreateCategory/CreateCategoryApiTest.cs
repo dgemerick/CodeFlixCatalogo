@@ -1,5 +1,7 @@
 ﻿using FC.CodeFlix.Catalog.Application.UseCases.Category.Common;
+using FC.CodeFlix.Catalog.Application.UseCases.Category.CreateCategory;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -43,5 +45,24 @@ public class CreateCategoryApiTest
         dbCategory.Id.Should().NotBeEmpty();
         dbCategory.CreatedAt.Should().NotBeSameDateAs(default);
 
+    }
+
+    [Theory(DisplayName = nameof(ThrowWhenCantInstantiateAggregate))]
+    [Trait("EndToEnd/API", "Category - Endpoints")]
+    [MemberData(
+        nameof(CreateCategoryApiTestDataGenerator.GetInvalidInputs),
+        MemberType = typeof(CreateCategoryApiTestDataGenerator)
+     )]
+    public async Task ThrowWhenCantInstantiateAggregate(CreateCategoryInput input, string expectedDetail)
+    {
+        var (response, output) = await _fixture.ApiClient.Post<ProblemDetails>("/categories", input);
+
+        response.Should().NotBeNull();
+        response!.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+        output.Should().NotBeNull();
+        output!.Title.Should().Be("One or more validation errors ocurred");
+        output.Type.Should().Be("UnprocessableEntity");
+        output.Status.Should().Be((int)HttpStatusCode.UnprocessableEntity);
+        output.Detail.Should().Be(expectedDetail);        
     }
 }
