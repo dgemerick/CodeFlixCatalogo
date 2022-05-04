@@ -1,5 +1,8 @@
 ﻿using FC.CodeFlix.Catalog.EndToEndTests.Base;
+using DomainEntity = FC.CodeFlix.Catalog.Domain.Entity;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FC.CodeFlix.Catalog.EndToEndTests.Api.Category.Common;
 public class CategoryBaseFixture : BaseFixture
@@ -59,4 +62,12 @@ public class CategoryBaseFixture : BaseFixture
     {
         return Faker.Commerce.ProductName()[..2];        
     }
+
+    public DomainEntity.Category GetExampleCategory()
+        => new(GetValidCategoryName(), GetValidCategoryDescription(), GetRandomBoolean());
+
+    public List<DomainEntity.Category> GetExampleCategoriesList(int listLength = 15)
+        => Enumerable.Range(1, listLength).Select(_ => new DomainEntity.Category(
+            GetValidCategoryName(), GetValidCategoryDescription(), GetRandomBoolean()
+            )).ToList();
 }
