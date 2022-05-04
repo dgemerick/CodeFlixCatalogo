@@ -1,6 +1,8 @@
 ﻿using FC.CodeFlix.Catalog.Application.UseCases.Category.Common;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -38,5 +40,26 @@ public class GetCategoryApiTest
         output.IsActive.Should().Be(exampleCategory.IsActive);
         output.CreatedAt.Should().Be(exampleCategory.CreatedAt);
 
+    }
+
+    [Fact(DisplayName = nameof(ThrowWhenNotFound))]
+    [Trait("EndToEnd/API", "Category/Get - Endpoints")]
+    public async Task ThrowWhenNotFound()
+    {
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList(20);
+        await _fixture.Persistence.InsertList(exampleCategoriesList);
+        var radomGuid = Guid.NewGuid();
+
+        var (response, output) = await _fixture.ApiClient.Get<ProblemDetails>(
+            $"/categories/{radomGuid}"
+        );
+
+        response.Should().NotBeNull();
+        response!.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status404NotFound);
+        output.Should().NotBeNull();
+        output!.Status.Should().Be((int)StatusCodes.Status404NotFound);
+        output.Type.Should().Be("NotFound");
+        output.Title.Should().Be("Not Found");
+        output.Detail.Should().Be($"Category '{radomGuid}' not found.");
     }
 }

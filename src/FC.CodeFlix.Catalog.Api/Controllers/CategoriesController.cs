@@ -33,4 +33,5 @@ public class CategoriesController : ControllerBase
         var output = await _mediator.Send(new GetCategoryInput(id), cancellationToken);
         return Ok(output);
     }
+
 }
