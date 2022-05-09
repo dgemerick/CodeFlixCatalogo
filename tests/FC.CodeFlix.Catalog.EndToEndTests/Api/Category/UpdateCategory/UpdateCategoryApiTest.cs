@@ -2,6 +2,8 @@
 using FC.CodeFlix.Catalog.Application.UseCases.Category.UpdateCategory;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using Xunit;
 
@@ -108,5 +110,28 @@ public class UpdateCategoryApiTest
         dbCategory!.Name.Should().Be(input.Name);
         dbCategory.Description.Should().Be(input.Description);
         dbCategory.IsActive.Should().Be(exampleCategory.IsActive!);
+    }
+
+    [Fact(DisplayName = nameof(ErrorWhenNotFound))]
+    [Trait("EndToEnd/API", "Category/Update - Endpoints")]
+    public async void ErrorWhenNotFound()
+    {
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList(20);
+        await _fixture.Persistence.InsertList(exampleCategoriesList);
+        var randomGuid = Guid.NewGuid();
+        var input = _fixture.GetExampleInput(randomGuid);
+
+        var (response, output) = await _fixture.ApiClient.Put<ProblemDetails>(
+            $"/categories/{randomGuid}",
+            input
+        );
+
+        response.Should().NotBeNull();
+        response!.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status404NotFound);
+        output.Should().NotBeNull();
+        output!.Title.Should().Be("Not Found");
+        output.Type.Should().Be("NotFound");
+        output.Status.Should().Be((int) StatusCodes.Status404NotFound);
+        output.Detail.Should().Be($"Category '{randomGuid}' not found.");
     }
 }
