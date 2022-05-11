@@ -10,7 +10,7 @@ using Xunit;
 namespace FC.CodeFlix.Catalog.EndToEndTests.Api.Category.GetCategory;
 
 [Collection(nameof(GetCategoryApiTestFixture))]
-public class GetCategoryApiTest
+public class GetCategoryApiTest : IDisposable
 {
     private readonly GetCategoryApiTestFixture _fixture;
 
@@ -61,5 +61,10 @@ public class GetCategoryApiTest
         output.Type.Should().Be("NotFound");
         output.Title.Should().Be("Not Found");
         output.Detail.Should().Be($"Category '{radomGuid}' not found.");
+    }
+
+    public void Dispose()
+    {
+        _fixture.CleanPersistence();
     }
 }

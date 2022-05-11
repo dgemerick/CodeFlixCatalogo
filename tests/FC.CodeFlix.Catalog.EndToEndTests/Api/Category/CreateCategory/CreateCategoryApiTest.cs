@@ -12,7 +12,7 @@ using DomainEntity = FC.CodeFlix.Catalog.Domain.Entity;
 namespace FC.CodeFlix.Catalog.EndToEndTests.Api.Category.CreateCategory;
 
 [Collection(nameof(CreateCategoryApiTestFixture))]
-public class CreateCategoryApiTest
+public class CreateCategoryApiTest : IDisposable
 {
     private readonly CreateCategoryApiTestFixture _fixture;
 
@@ -46,7 +46,7 @@ public class CreateCategoryApiTest
         dbCategory.Id.Should().NotBeEmpty();
         dbCategory.CreatedAt.Should().NotBeSameDateAs(default);
 
-    }
+    }    
 
     [Theory(DisplayName = nameof(ErrorWhenCantInstantiateAggregate))]
     [Trait("EndToEnd/API", "Category/Create - Endpoints")]
@@ -65,5 +65,10 @@ public class CreateCategoryApiTest
         output.Type.Should().Be("UnprocessableEntity");
         output.Status.Should().Be((int)StatusCodes.Status422UnprocessableEntity);
         output.Detail.Should().Be(expectedDetail);        
+    }
+
+    public void Dispose()
+    {
+        _fixture.CleanPersistence();
     }
 }
