@@ -2,6 +2,7 @@ using FC.CodeFlix.Catalog.Application.UseCases.Category.Common;
 using FC.CodeFlix.Catalog.Application.UseCases.Category.CreateCategory;
 using FC.CodeFlix.Catalog.Application.UseCases.Category.DeleteCategory;
 using FC.CodeFlix.Catalog.Application.UseCases.Category.GetCategory;
+using FC.CodeFlix.Catalog.Application.UseCases.Category.ListCategories;
 using FC.CodeFlix.Catalog.Application.UseCases.Category.UpdateCategory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +56,14 @@ public class CategoriesController : ControllerBase
     {
         await _mediator.Send(new DeleteCategoryInput(id), cancellationToken);
         return NoContent();
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(CategoryModelOutput), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List([FromQuery] ListCategoriesInput input, CancellationToken cancellationToken)
+    {
+        var output = await _mediator.Send(input, cancellationToken);
+        return Ok(output);
     }
 
 }

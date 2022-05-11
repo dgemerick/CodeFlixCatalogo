@@ -2,6 +2,7 @@
 using FC.CodeFlix.Catalog.Application.UseCases.Category.ListCategories;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Linq;
 using System.Net;
 using Xunit;
@@ -9,7 +10,7 @@ using Xunit;
 namespace FC.CodeFlix.Catalog.EndToEndTests.Api.Category.ListCategories;
 
 [Collection(nameof(ListCategoriesApiTestFixture))]
-public class ListCategoriesApiTest
+public class ListCategoriesApiTest : IDisposable
 {
     private readonly ListCategoriesApiTestFixture _fixture;
 
@@ -27,7 +28,7 @@ public class ListCategoriesApiTest
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         
 
-        var (response, output) = await _fixture.ApiClient.Get<ListCategoriesOutput>("/categories}");
+        var (response, output) = await _fixture.ApiClient.Get<ListCategoriesOutput>("/categories");
 
         response.Should().NotBeNull();
         response!.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status200OK);
@@ -44,5 +45,10 @@ public class ListCategoriesApiTest
             outputItem.CreatedAt.Should().Be(exampleItem.CreatedAt);
         }
         
+    }
+
+    public void Dispose()
+    {
+        _fixture.CleanPersistence();
     }
 }
