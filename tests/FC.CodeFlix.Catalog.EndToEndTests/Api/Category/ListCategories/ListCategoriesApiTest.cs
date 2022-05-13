@@ -88,7 +88,6 @@ public class ListCategoriesApiTest : IDisposable
             outputItem.IsActive.Should().Be(exampleItem.IsActive);
             outputItem.CreatedAt.Should().Be(exampleItem.CreatedAt);
         }
-
     }
 
     public void Dispose()
