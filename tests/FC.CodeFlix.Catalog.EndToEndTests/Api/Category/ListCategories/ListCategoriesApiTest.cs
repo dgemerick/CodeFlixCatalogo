@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace FC.CodeFlix.Catalog.EndToEndTests.Api.Category.ListCategories;
@@ -21,7 +22,7 @@ public class ListCategoriesApiTest : IDisposable
 
     [Fact(DisplayName = nameof(LisCategoriesAndTotalByDefault))]
     [Trait("EndToEnd/API", "Category/List - Endpoints")]
-    public async void LisCategoriesAndTotalByDefault()
+    public async Task LisCategoriesAndTotalByDefault()
     {
         var defaultPerPage = 15;
         var exampleCategoriesList = _fixture.GetExampleCategoriesList(20);
@@ -51,7 +52,7 @@ public class ListCategoriesApiTest : IDisposable
 
     [Fact(DisplayName = nameof(ItemsEmptyWhenPersistenceEmpty))]
     [Trait("EndToEnd/API", "Category/List - Endpoints")]
-    public async void ItemsEmptyWhenPersistenceEmpty()
+    public async Task ItemsEmptyWhenPersistenceEmpty()
     {
         var (response, output) = await _fixture.ApiClient.Get<ListCategoriesOutput>("/categories");
 
@@ -64,7 +65,7 @@ public class ListCategoriesApiTest : IDisposable
 
     [Fact(DisplayName = nameof(LisCategoriesAndTotal))]
     [Trait("EndToEnd/API", "Category/List - Endpoints")]
-    public async void LisCategoriesAndTotal()
+    public async Task LisCategoriesAndTotal()
     {
         var exampleCategoriesList = _fixture.GetExampleCategoriesList(20);
         await _fixture.Persistence.InsertList(exampleCategoriesList);

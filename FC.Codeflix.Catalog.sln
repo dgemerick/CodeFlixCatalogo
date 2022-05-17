@@ -19,7 +19,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.CodeFlix.Catalog.Infra.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.CodeFlix.Catalog.EndToEndTests", "tests\FC.CodeFlix.Catalog.EndToEndTests\FC.CodeFlix.Catalog.EndToEndTests.csproj", "{A46F7AA4-243A-4DAE-90A2-FF005A0C983D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FC.CodeFlix.Catalog.Api", "src\FC.CodeFlix.Catalog.Api\FC.CodeFlix.Catalog.Api.csproj", "{AACFE892-5C0B-4267-A45B-292D2CD42D18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FC.CodeFlix.Catalog.Api", "src\FC.CodeFlix.Catalog.Api\FC.CodeFlix.Catalog.Api.csproj", "{AACFE892-5C0B-4267-A45B-292D2CD42D18}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "env", "env", "{6E8E9ED9-B566-41DA-B548-59451C6D58DF}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
