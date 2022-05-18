@@ -5,16 +5,17 @@ namespace FC.CodeFlix.Catalog.Api.Configurations;
 
 public static class ConnectionConfiguration
 {
-    public static IServiceCollection AddAppConnections(this IServiceCollection services)
+    public static IServiceCollection AddAppConnections(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbConnection();
+        services.AddDbConnection(configuration);
 
         return services;
     }
 
-    private static IServiceCollection AddDbConnection(this IServiceCollection services)
+    private static IServiceCollection AddDbConnection(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<CodeflixCatalogDbContext>(options => options.UseInMemoryDatabase("InMemory-DSV-Database"));
+        var connectionString = configuration.GetConnectionString("CatalogDb");
+        services.AddDbContext<CodeflixCatalogDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
         return services;
     }

@@ -2,7 +2,7 @@ using FC.CodeFlix.Catalog.Api.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAppConnections();
+builder.Services.AddAppConnections(builder.Configuration);
 builder.Services.AddUseCases();
 builder.Services.AddAndConfigureControllers();
 
