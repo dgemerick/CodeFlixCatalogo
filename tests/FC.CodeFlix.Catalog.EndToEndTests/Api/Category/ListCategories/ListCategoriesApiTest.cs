@@ -1,5 +1,6 @@
 ﻿using FC.CodeFlix.Catalog.Application.UseCases.Category.Common;
 using FC.CodeFlix.Catalog.Application.UseCases.Category.ListCategories;
+using FC.CodeFlix.Catalog.EndToEndTests.Extensions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -27,7 +28,7 @@ public class ListCategoriesApiTest : IDisposable
         var defaultPerPage = 15;
         var exampleCategoriesList = _fixture.GetExampleCategoriesList(20);
         await _fixture.Persistence.InsertList(exampleCategoriesList);
-        
+
 
         var (response, output) = await _fixture.ApiClient.Get<ListCategoriesOutput>("/categories");
 
@@ -41,13 +42,16 @@ public class ListCategoriesApiTest : IDisposable
         foreach (CategoryModelOutput outputItem in output.Items)
         {
             var exampleItem = exampleCategoriesList.FirstOrDefault(x => x.Id == outputItem.Id);
-            exampleItem.Should().NotBeNull();            
+            exampleItem.Should().NotBeNull();
             outputItem.Name.Should().Be(exampleItem!.Name);
             outputItem.Description.Should().Be(exampleItem.Description);
             outputItem.IsActive.Should().Be(exampleItem.IsActive);
-            outputItem.CreatedAt.Should().Be(exampleItem.CreatedAt);
+            outputItem.CreatedAt.TrimMillisseconds().Should().Be(
+                exampleItem.CreatedAt.TrimMillisseconds()
+            );
+
         }
-        
+
     }
 
     [Fact(DisplayName = nameof(ItemsEmptyWhenPersistenceEmpty))]
@@ -86,8 +90,10 @@ public class ListCategoriesApiTest : IDisposable
             exampleItem.Should().NotBeNull();
             outputItem.Name.Should().Be(exampleItem!.Name);
             outputItem.Description.Should().Be(exampleItem.Description);
-            outputItem.IsActive.Should().Be(exampleItem.IsActive);
-            outputItem.CreatedAt.Should().Be(exampleItem.CreatedAt);
+            outputItem.IsActive.Should().Be(exampleItem.IsActive);            
+            outputItem.CreatedAt.TrimMillisseconds().Should().Be(
+                exampleItem.CreatedAt.TrimMillisseconds()
+            );
         }
     }
 
